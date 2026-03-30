@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Priyashi Dogra — HCI Researcher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a26;
+    --border: rgba(255,255,255,0.07);
+    --accent: #c8a96e;
+    --accent2: #7eb8d4;
+    --text: #e8e6f0;
+    --muted: #7a7890;
+    --soft: #b0adc4;
+    --nav-bg: rgba(10,10,15,0.95);
+    --code-bg: rgba(0,0,0,0.4);
+    --transition-theme: background 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+  }
+
+  :root.light {
+    --bg: #f5f3ee;
+    --surface: #ede9e1;
+    --surface2: #e4dfd5;
+    --border: rgba(0,0,0,0.09);
+    --accent: #9a6f2e;
+    --accent2: #3a7fa0;
+    --text: #1a1814;
+    --muted: #8a8070;
+    --soft: #4a4438;
+    --nav-bg: rgba(245,243,238,0.95);
+    --code-bg: rgba(0,0,0,0.06);
+  }
+
+  /* Theme toggle button */
+  .theme-toggle {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    width: 52px;
+    height: 28px;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.3s, background 0.3s;
+    flex-shrink: 0;
+  }
+
+  .theme-toggle:hover { border-color: var(--accent); }
+
+  .toggle-track {
+    position: absolute;
+    inset: 3px;
+    border-radius: 50px;
+    background: var(--surface2);
+    transition: background 0.3s;
+  }
+
+  .toggle-thumb {
+    position: absolute;
+    top: 50%;
+    left: 4px;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--accent);
+    transition: left 0.35s cubic-bezier(0.4,0,0.2,1), background 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    line-height: 1;
+  }
+
+  :root.light .toggle-thumb { left: calc(100% - 22px); }
+
+  .toggle-icon-dark,
+  .toggle-icon-light { position: absolute; top: 50%; transform: translateY(-50%); font-size: 10px; line-height: 1; }
+  .toggle-icon-dark { left: 7px; }
+  .toggle-icon-light { right: 6px; }
+  :root:not(.light) .toggle-icon-light { opacity: 0.3; }
+  :root.light .toggle-icon-dark { opacity: 0.3; }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+    cursor: default;
+    transition: background 0.4s ease, color 0.4s ease;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.025;
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.5rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--nav-bg);
+    backdrop-filter: blur(12px);
+    transition: background 0.4s ease;
+  }
+
+  .nav-logo {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 8rem 4rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 50%, rgba(200,169,110,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 20% 80%, rgba(126,184,212,0.05) 0%, transparent 60%);
+  }
+
+  .hero-content {
+    position: relative;
+    max-width: 900px;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+
+  .hero-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(4rem, 9vw, 8rem);
+    font-weight: 300;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.4s forwards;
+  }
+
+  .hero-name em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-desc {
+    font-size: 1.1rem;
+    color: var(--soft);
+    max-width: 560px;
+    line-height: 1.8;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.6s forwards;
+  }
+
+  .hero-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.8s forwards;
+  }
+
+  .tag {
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.02);
+    transition: all 0.3s;
+  }
+
+  .tag:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(200,169,110,0.05);
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 3rem;
+    left: 4rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0;
+    animation: fadeIn 1s 1.4s forwards;
+  }
+
+  .scroll-line {
+    width: 48px;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.5;
+    animation: expandLine 1s 1.6s forwards;
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+
+  .scroll-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* SECTIONS */
+  section {
+    padding: 7rem 4rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    max-width: 48px;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.4;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.4rem, 4vw, 3.5rem);
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 4rem;
+  }
+
+  .section-title em { font-style: italic; color: var(--accent); }
+
+  /* ABOUT */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .about-text p {
+    color: var(--soft);
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    line-height: 1.9;
+  }
+
+  .about-text p strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .about-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .sidebar-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sidebar-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--accent);
+    opacity: 0.6;
+  }
+
+  .sidebar-card h4 {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .sidebar-card p {
+    font-size: 0.92rem;
+    color: var(--soft);
+    line-height: 1.7;
+  }
+
+  .interest-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .interest-chip {
+    padding: 0.25rem 0.75rem;
+    background: rgba(200,169,110,0.08);
+    border: 1px solid rgba(200,169,110,0.2);
+    border-radius: 2px;
+    font-size: 0.78rem;
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* JOURNEY / TIMELINE */
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), transparent);
+    opacity: 0.3;
+  }
+
+  .timeline-item {
+    position: relative;
+    padding: 0 0 3.5rem 3rem;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: all 0.6s ease;
+  }
+
+  .timeline-item.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .timeline-dot {
+    position: absolute;
+    left: -5px;
+    top: 6px;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 12px rgba(200,169,110,0.4);
+  }
+
+  .timeline-dot.blue {
+    background: var(--accent2);
+    box-shadow: 0 0 12px rgba(126,184,212,0.4);
+  }
+
+  .timeline-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .timeline-role {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+  }
+
+  .timeline-org {
+    font-size: 0.9rem;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+
+  .timeline-desc {
+    font-size: 0.92rem;
+    color: var(--soft);
+    line-height: 1.8;
+    max-width: 600px;
+  }
+
+  .timeline-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .t-tag {
+    padding: 0.2rem 0.65rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* RESEARCH */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    cursor: default;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.3s, background 0.3s;
+  }
+
+  .project-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .project-card:hover {
+    border-color: rgba(200,169,110,0.3);
+    background: var(--surface2);
+  }
+
+  .project-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--accent), var(--accent2));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+
+  .project-card:hover::after { transform: scaleX(1); }
+
+  .project-icon {
+    font-size: 1.5rem;
+    margin-bottom: 1.25rem;
+    display: block;
+  }
+
+  .project-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.25rem;
+    font-weight: 400;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .project-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.75;
+    margin-bottom: 1.25rem;
+  }
+
+  .project-highlight {
+    font-size: 0.82rem;
+    color: var(--accent2);
+    font-family: 'DM Mono', monospace;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+    margin-top: auto;
+  }
+
+  /* SKILLS */
+  .skills-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+
+  .skill-group h3 {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .skill-item {
+    margin-bottom: 1.25rem;
+  }
+
+  .skill-name {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+    color: var(--soft);
+    margin-bottom: 0.4rem;
+  }
+
+  .skill-bar {
+    height: 2px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .skill-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--accent), var(--accent2));
+    border-radius: 2px;
+    width: 0%;
+    transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* CODE PASSION */
+  .code-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .code-section::before {
+    content: '</>';
+    position: absolute;
+    right: 3rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'DM Mono', monospace;
+    font-size: 8rem;
+    color: rgba(200,169,110,0.04);
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .code-content {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  .code-text h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .code-text h3 em { font-style: italic; color: var(--accent); }
+
+  .code-text p {
+    font-size: 0.92rem;
+    color: var(--soft);
+    line-height: 1.8;
+  }
+
+  .code-snippet {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    line-height: 1.8;
+    color: var(--muted);
+    overflow: hidden;
+    transition: background 0.4s ease, border-color 0.4s ease;
+  }
+
+  .code-snippet .kw { color: #c792ea; }
+  .code-snippet .fn { color: var(--accent2); }
+  .code-snippet .str { color: #c3e88d; }
+  .code-snippet .cm { color: #546e7a; }
+  .code-snippet .acc { color: var(--accent); }
+
+  /* CONTACT */
+  .contact-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .contact-text p {
+    font-size: 1rem;
+    color: var(--soft);
+    line-height: 1.9;
+    margin-bottom: 1.5rem;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    text-decoration: none;
+    color: var(--soft);
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    group: true;
+  }
+
+  .contact-link:hover {
+    border-color: rgba(200,169,110,0.4);
+    color: var(--text);
+    background: var(--surface2);
+  }
+
+  .contact-icon {
+    font-size: 1rem;
+    width: 2rem;
+    text-align: center;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  footer p {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* DIVIDER */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes expandLine {
+    to { transform: scaleX(1); }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 1.5rem 2rem; }
+    .nav-links { display: none; }
+    section { padding: 5rem 2rem; }
+    .hero { padding: 8rem 2rem 4rem; }
+    .about-grid, .skills-layout, .contact-inner, .code-content { grid-template-columns: 1fr; gap: 2rem; }
+    footer { padding: 2rem; flex-direction: column; gap: 1rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">P.Dogra</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#journey">Journey</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
+    <div class="toggle-track"></div>
+    <div class="toggle-thumb"></div>
+    <span class="toggle-icon-dark">🌙</span>
+    <span class="toggle-icon-light">☀️</span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">HCI Researcher &nbsp;/&nbsp; Uppsala, Sweden</div>
+    <h1 class="hero-name">Priyashi<br><em>Dogra</em></h1>
+    <p class="hero-desc">
+      I study how people trust, relate to, and are shaped by intelligent systems —
+      from social robots that sense empathy to AI agents that must earn your confidence.
+    </p>
+    <div class="hero-tags">
+      <span class="tag">Human-Robot Interaction</span>
+      <span class="tag">Agentic AI Systems</span>
+      <span class="tag">Trust Calibration</span>
+      <span class="tag">Dialogue Architecture</span>
+      <span class="tag">React + Prototyping</span>
+      <span class="tag">Mixed-Method Research</span>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span class="scroll-text">Scroll to explore</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">01 — Who I am</div>
+  <h2 class="section-title">Builder. Researcher.<br><em>Curious human.</em></h2>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>
+        I'm a Master's student in Human-Computer Interaction at Uppsala University, currently in my first year and already deep in the questions that matter most to me: <strong>how do we design AI systems that humans can genuinely understand, trust, and relate to?</strong>
+      </p>
+      <p>
+        Before academia, I spent three years as a software developer at IBM — shipping enterprise-grade web applications, wrestling with real-world product constraints, and learning that the gap between a good idea and a working system is where everything interesting happens.
+      </p>
+      <p>
+        What drew me to research is the same thing that drew me to coding: <strong>a need to understand systems from the inside out</strong>. Now I combine that engineering instinct with rigorous human-centered research methods — running studies with the Furhat social robot, investigating bias in generative AI, and analyzing how anthropomorphic design shapes user behaviour.
+      </p>
+      <p>
+        I'm based in Uppsala, originally from India, and currently exploring what it means to do a PhD at the frontier of HRI and agentic AI — specifically in assistive robotics for people who need it most.
+      </p>
+    </div>
+    <div class="about-sidebar">
+      <div class="sidebar-card">
+        <h4>Currently</h4>
+        <p>MSc HCI @ Uppsala University<br>UX Research Intern @ Gaddr AB, Stockholm<br>Applying to PhD in HRI & Dialogue Systems</p>
+      </div>
+      <div class="sidebar-card">
+        <h4>Beyond the CV</h4>
+        <div class="interest-items">
+          <span class="interest-chip">Mandala art</span>
+          <span class="interest-chip">Baking</span>
+          <span class="interest-chip">Music</span>
+          <span class="interest-chip">Cycling</span>
+          <span class="interest-chip">Swedish winters</span>
+          <span class="interest-chip">Building in React</span>
+        </div>
+      </div>
+      <div class="sidebar-card">
+        <h4>Languages</h4>
+        <p>English (Fluent) &nbsp;·&nbsp; Hindi (Native) &nbsp;·&nbsp; Swedish (Learning)</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- JOURNEY -->
+<section id="journey">
+  <div class="section-label">02 — My path</div>
+  <h2 class="section-title">A journey through<br><em>systems & people</em></h2>
+
+  <div class="timeline">
+
+    <div class="timeline-item">
+      <div class="timeline-dot blue"></div>
+      <div class="timeline-date">Sep 2025 — Present</div>
+      <div class="timeline-role">UX Research Intern</div>
+      <div class="timeline-org">Gaddr AB · Stockholm, Sweden</div>
+      <div class="timeline-desc">Conducting quantitative and qualitative research on AI Agent integration, with a focus on trust calibration. Investigating how anthropomorphic features — like AI notetakers that seem to "listen" — affect user comfort, agency attribution, and emotional response. Building research protocols end-to-end and collaborating directly with founders to shape the product.</div>
+      <div class="timeline-tags">
+        <span class="t-tag">Trust Calibration</span>
+        <span class="t-tag">AI Agents</span>
+        <span class="t-tag">Mixed Methods</span>
+        <span class="t-tag">Anthropomorphism</span>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot blue"></div>
+      <div class="timeline-date">Sep 2024 — Present</div>
+      <div class="timeline-role">MSc Human-Computer Interaction</div>
+      <div class="timeline-org">Uppsala University · Sweden</div>
+      <div class="timeline-desc">Specialising in Human-Robot Interaction, Human-AI Psychology, and Technical Prototyping. Ran a full empirical study using the Furhat SDK, explored bias mitigation in generative AI at KTH, and won 1st prize at the UU AI Hackathon. Thesis in progress on trust calibration and anthropomorphic design in AI agents.</div>
+      <div class="timeline-tags">
+        <span class="t-tag">HRI</span>
+        <span class="t-tag">Furhat SDK</span>
+        <span class="t-tag">Generative AI</span>
+        <span class="t-tag">Participatory Design</span>
+        <span class="t-tag">🏆 Hackathon Winner</span>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">Dec 2020 — Jan 2024</div>
+      <div class="timeline-role">Associate Software Developer</div>
+      <div class="timeline-org">IBM India Ltd. · Bengaluru, India</div>
+      <div class="timeline-desc">Three years building enterprise web applications with React and JavaScript for global clients. Reduced page load times by 30%, designed RESTful APIs, ensured WCAG accessibility compliance across data dashboards. Learned to work in large cross-functional Agile teams — and how to ship things that actually work at scale.</div>
+      <div class="timeline-tags">
+        <span class="t-tag">React</span>
+        <span class="t-tag">JavaScript</span>
+        <span class="t-tag">REST APIs</span>
+        <span class="t-tag">Agile</span>
+        <span class="t-tag">WCAG</span>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">2016 — 2020</div>
+      <div class="timeline-role">BTech Electrical & Electronics Engineering</div>
+      <div class="timeline-org">Banasthali University · India</div>
+      <div class="timeline-desc">Where my curiosity about how systems work — electrical, computational, human — first took shape. Laid the technical foundations that now underpin both my engineering instincts and my research thinking.</div>
+      <div class="timeline-tags">
+        <span class="t-tag">Engineering</span>
+        <span class="t-tag">Systems Thinking</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- RESEARCH -->
+<section id="research">
+  <div class="section-label">03 — Research work</div>
+  <h2 class="section-title">Projects at the edge<br><em>of human & machine</em></h2>
+
+  <div class="projects-grid">
+
+    <div class="project-card">
+      <span class="project-icon">🤖</span>
+      <div class="project-title">Empathy in Social Robots: A Furhat Study</div>
+      <div class="project-desc">Designed a comparative study (Empathetic vs. Neutral robot conditions) to evaluate how anthropomorphic behaviour influences user motivation. Implemented conversational flows using the Furhat SDK and Python, prompt-engineering the robot to display warmth and active listening. Measured perceived safety with the Godspeed Questionnaire.</div>
+      <div class="project-highlight">↳ Furhat SDK · Python · Godspeed Questionnaire · Ethics Analysis</div>
+    </div>
+
+    <div class="project-card">
+      <span class="project-icon">⚖️</span>
+      <div class="project-title">Mitigating Bias in Generative AI</div>
+      <div class="project-desc">Investigated bias in large-scale training datasets and implemented data cleaning strategies before model training. Designed evaluation frameworks to assess fairness and reduce algorithmic bias in model outputs. Conducted at KTH Royal Institute.</div>
+      <div class="project-highlight">↳ LLM Evaluation · Data Quality · Fairness Frameworks</div>
+    </div>
+
+    <div class="project-card">
+      <span class="project-icon">🔬</span>
+      <div class="project-title">AI Agent Trust Calibration at Gaddr AB</div>
+      <div class="project-desc">Ongoing industry research on how users develop trust (or distrust) in AI agents. Analysing user behaviour metrics to identify friction points in AI feature adoption and examining how anthropomorphic design choices affect agency attribution.</div>
+      <div class="project-highlight">↳ Trust Research · Qualitative + Quantitative · Industry Setting</div>
+    </div>
+
+    <div class="project-card">
+      <span class="project-icon">📊</span>
+      <div class="project-title">Computational Social Science: Screen Time & Sleep</div>
+      <div class="project-desc">Analysed a Kaggle dataset on teenage social media usage and sleep patterns using Orange Data Mining. Conducted statistical correlation analysis and sentiment analysis linking high screen time to behavioural health metrics.</div>
+      <div class="project-highlight">↳ Orange Data Mining · Sentiment Analysis · Statistical Methods</div>
+    </div>
+
+    <div class="project-card">
+      <span class="project-icon">🏆</span>
+      <div class="project-title">Public Sector Data Vis — UU Hackathon Winner</div>
+      <div class="project-desc">Redesigned public sector data visualisations for Uppsala Kommun to improve accessibility for non-technical citizens. Built interactive dashboards in Flourish and Figma. Awarded 1st prize at the UU AI Innovation Hackathon 2025.</div>
+      <div class="project-highlight">↳ Flourish · Figma · Data Accessibility · 1st Prize</div>
+    </div>
+
+    <div class="project-card">
+      <span class="project-icon">💜</span>
+      <div class="project-title">Participatory Design for Uppsala Women's Shelter</div>
+      <div class="project-desc">Led co-design workshops with vulnerable stakeholders using ethical participatory methods. Designed safer awareness and communication tools for bystanders, with a trauma-informed research ethics approach throughout.</div>
+      <div class="project-highlight">↳ Participatory Design · Vulnerable Populations · Ethics</div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CODE PASSION -->
+<section id="code">
+  <div class="code-section">
+    <div class="code-content">
+      <div class="code-text">
+        <div class="section-label" style="margin-bottom:1rem;">04 — How I build</div>
+        <h3>I love coding<br>in <em>React</em></h3>
+        <p style="margin-top:1rem;">
+          Research tells me what to build. React lets me build it. I love the moment a prototype comes to life — when a wireframe becomes something a real user can interact with, react to, and surprise you with. At IBM I shipped production React applications. In research I build configurable AI interfaces to run psychological experiments. The two worlds inform each other constantly.
+        </p>
+      </div>
+      <div class="code-snippet">
+<span class="cm">// Building a trust study interface</span>
+<br><span class="kw">const</span> <span class="fn">RobotInteractionStudy</span> = () => {
+<br>&nbsp;&nbsp;<span class="kw">const</span> [phase, setPhase] = <span class="fn">useState</span>(<span class="str">'neutral'</span>);
+<br>&nbsp;&nbsp;<span class="kw">const</span> [trustScore, setTrust] = <span class="fn">useState</span>(<span class="acc">0</span>);
+<br>
+<br>&nbsp;&nbsp;<span class="cm">// Anthropomorphic cue triggers</span>
+<br>&nbsp;&nbsp;<span class="kw">const</span> <span class="fn">onEmpathyEvent</span> = (cue) => {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">logGodspeedMetric</span>(cue, timestamp);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">setTrust</span>(prev => prev + cue.weight);
+<br>&nbsp;&nbsp;};
+<br>
+<br>&nbsp;&nbsp;<span class="kw">return</span> &lt;<span class="fn">StudySession</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;phase={phase}
+<br>&nbsp;&nbsp;&nbsp;&nbsp;onCue={<span class="fn">onEmpathyEvent</span>}
+<br>&nbsp;&nbsp;/&gt;;
+<br>};
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider" style="margin-top:7rem;"></div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label">05 — Capabilities</div>
+  <h2 class="section-title">What I bring<br><em>to the table</em></h2>
+
+  <div class="skills-layout">
+    <div class="skill-group">
+      <h3>Research & HRI</h3>
+      <div class="skill-item">
+        <div class="skill-name"><span>Furhat SDK & Dialogue Systems</span><span>Advanced</span></div>
+        <div class="skill-bar"><div class="skill-fill" data-width="85"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name"><span>Mixed-Method Research</span><span>Advanced</span></div>
+        <div class="skill-bar"><div class="skill-fill" data-width="90"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name"><span>Trust & AI Psychology</span><span>Strong</span></div>
+        <div class="skill-bar"><div class="skill-fill" data-width="80"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name"><span>LLM / Prompt Engineering</span><span>Growing</span></div>
+        <div class="skill-bar"><div class="skill-fill" data-width="70"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name"><span>Participatory & Ethical Design</span><span>Strong</span></div>
+        <div class="skill-bar"><div class="skill-fill" data-width="82"></div></div>
+      </div>
+    </div>
+
+    <div class="skill-group">
+      <h3>Technical & Design</h3>
+      <div class="skill-item">
+        <div class="skill-name"><span>React / JavaScript</span><span>Advanced</span></div>
+        <div class="skill-bar"><div class="skill-fill" data-width="88"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name"><span>Python</span><span>Intermediate</span></div>
+        <div class="skill-bar"><div class="skill-fill" data-width="72"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name"><span>Figma & Prototyping</span><span>Advanced</span></div>
+        <div class="skill-bar"><div class="skill-fill" data-width="85"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name"><span>Data Visualisation</span><span>Strong</span></div>
+        <div class="skill-bar"><div class="skill-fill" data-width="78"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name"><span>SQL / Data Analysis</span><span>Intermediate</span></div>
+        <div class="skill-bar"><div class="skill-fill" data-width="65"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label">06 — Get in touch</div>
+  <h2 class="section-title">Let's talk about<br><em>what's next</em></h2>
+  <div class="contact-inner">
+    <div class="contact-text">
+      <p>
+        I'm actively exploring doctoral opportunities in Human-Robot Interaction and agentic AI — particularly research at the intersection of dialogue systems, contextual understanding, and assistive robotics.
+      </p>
+      <p>
+        Whether you're a researcher, recruiter, or someone curious about the same questions I am — I'd love to connect.
+      </p>
+    </div>
+    <div class="contact-links">
+      <a href="mailto:priyashidogra98@gmail.com" class="contact-link">
+        <span class="contact-icon">✉</span>
+        priyashidogra98@gmail.com
+      </a>
+      <a href="https://linkedin.com/in/priyashidogra" class="contact-link" target="_blank">
+        <span class="contact-icon">in</span>
+        linkedin.com/in/priyashidogra
+      </a>
+      <a href="#" class="contact-link">
+        <span class="contact-icon">📍</span>
+        Uppsala, Sweden
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Priyashi Dogra &nbsp;·&nbsp; HCI Researcher &nbsp;·&nbsp; Uppsala 2025</p>
+  <p>Built with curiosity &amp; intention</p>
+</footer>
+
+<script>
+  // Intersection Observer for timeline & project cards
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, entry.target.dataset.delay || 0);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.timeline-item').forEach((el, i) => {
+    el.dataset.delay = i * 120;
+    observer.observe(el);
+  });
+
+  document.querySelectorAll('.project-card').forEach((el, i) => {
+    el.dataset.delay = i * 80;
+    observer.observe(el);
+  });
+
+  // Skill bars animation on scroll
+  const skillObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('.skill-fill').forEach(bar => {
+          setTimeout(() => {
+            bar.style.width = bar.dataset.width + '%';
+          }, 200);
+        });
+        skillObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  const skillsSection = document.querySelector('#skills');
+  if (skillsSection) skillObserver.observe(skillsSection);
+
+  // Smooth nav highlight
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      const top = section.offsetTop - 120;
+      if (window.scrollY >= top) current = section.getAttribute('id');
+    });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + current
+        ? 'var(--accent)' : '';
+    });
+  });
+
+  // Theme toggle
+  const toggle = document.getElementById('themeToggle');
+  const root = document.documentElement;
+
+  // Restore saved preference
+  if (localStorage.getItem('theme') === 'light') root.classList.add('light');
+
+  toggle.addEventListener('click', () => {
+    root.classList.toggle('light');
+    localStorage.setItem('theme', root.classList.contains('light') ? 'light' : 'dark');
+  });
+</script>
+</body>
+</html>
